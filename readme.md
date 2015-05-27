@@ -8,10 +8,10 @@ intervals.
 
 Intervals are assumed to be over integers, with half-open indexes, [start, end).
 
-This can be used, for example, to index a large set of genomic variants prior
-to finding those variants which overlap regions of interest (e.g. regions being
-rendered in the UI). Query time with the index should be O(log n), rather than 
+Query time with the index should be O(log n), rather than 
 the O(n) required for a brute-force search.
+
+Work in progress. Might be useful for drawing genomic data.
 
 ## Methods
 
@@ -27,8 +27,6 @@ var idx = index([{start: 10, end: 12, id: 1}, {start: 21, end: 30: id: 2}]);
 var overlapping = matches(idx, {start: 12, end: 22});
 // => [{start: 21, end: 30: id: 2}]
 ```
-
-
 
 ## Build
 The build is based on npm and webpack.
