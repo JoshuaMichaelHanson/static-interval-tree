@@ -1,8 +1,34 @@
-# Client template
+# Static interval tree
 
-An evolving build for client-side development.
+A very simple library for finding overlapping intervals in one dimension.
 
-webpack, react, rx, babel, mocha, jsverify.
+The intervals are indexed using an augmented balanced binary search tree. The
+search tree is bulk-loaded by sorting. There's no support for adding/removing
+intervals.
+
+Intervals are assumed to be over integers, with half-open indexes, [start, end).
+
+This can be used, for example, to index a large set of genomic variants prior
+to finding those variants which overlap regions of interest (e.g. regions being
+rendered in the UI). Query time with the index should be O(log n), rather than 
+the O(n) required for a brute-force search.
+
+## Methods
+
+```javascript
+var {index, matches} = require('static-interval-tree');
+
+// index(intervals :: [{start, end, ...}, ...]) :: interval-tree
+
+var idx = index([{start: 10, end: 12, id: 1}, {start: 21, end: 30: id: 2}]);
+
+// matches(interval-tree, pos :: {start, end}) :: [{start, end, ...}, ...]
+
+var overlapping = matches(idx, {start: 12, end: 22});
+// => [{start: 21, end: 30: id: 2}]
+```
+
+
 
 ## Build
 The build is based on npm and webpack.
@@ -10,8 +36,8 @@ The build is based on npm and webpack.
    * On OSX, install brew http://brew.sh/
    * `brew install git`
    * `brew install node`
- * `git clone https://github.com/acthp/client-template.git`
- * `cd client-template`
+ * `git clone https://github.com/acthp/static-interval-tree.git`
+ * `cd static-interval-tree`
  * `npm install`
  * `npm start`
  * browse to [http://localhost:8080/webpack-dev-server/](http://localhost:8080/webpack-dev-server/)
