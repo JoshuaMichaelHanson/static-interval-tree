@@ -3,7 +3,7 @@
 var _ = require('underscore');
 //var assert = require('assert');
 var jsc = require('jsverify');
-var {toTree, index, matches} = require('../js/index');
+var {toTree, index, matches, matches01} = require('../js/index');
 
 function flatten(tree) {
 	return tree ? flatten(tree.left).concat([tree.el]).concat(flatten(tree.right)) :
@@ -57,29 +57,44 @@ describe('interval tree', function () {
 	}
 
 	describe('#match', function () {
-		property('should return overlapping segment', uniq(jsc.tuple([jsc.nat, jsc.nat, jsc.nat, jsc.nat])), function (twoIntv) {
+		// XXX I expect this will fail for zero-length intervals. In practice
+		// jsverify never picks zero-length intervals in 100 tests, and there's
+		// a recursion bug (blown stack) for larger numbers of tests. Should
+		// revisit when jsverify can handle larger tests runs.
+		property('should return overlapping segment, half-open', uniq(jsc.tuple([jsc.nat, jsc.nat, jsc.nat, jsc.nat])), function (twoIntv) {
 			var cmp = (x, y) => x - y;
 			var ordered = twoIntv.slice(0).sort(cmp);
 			var [a, b, c, d] = ordered;
 			var el = {start: a, end: c, id: 0};
 			var t = index([el]);
-			return _.isEqual(matches(t, {start: b, end: d}), [el]);
+			return _.isEqual(matches01(t, {start: b, end: d}), [el]);
 		});
-		property('should not return non-overlapping segment', uniq(jsc.tuple([jsc.nat, jsc.nat, jsc.nat, jsc.nat])), function (twoIntv) {
+		// XXX see above about zero-length intervals.
+		property('should not return non-overlapping segment, half-open', uniq(jsc.tuple([jsc.nat, jsc.nat, jsc.nat, jsc.nat])), function (twoIntv) {
 			var cmp = (x, y) => x - y;
 			var ordered = twoIntv.slice(0).sort(cmp);
 			var [a, b, c, d] = ordered;
 			var el = {start: a, end: b, id: 0};
 			var t = index([el]);
-			return _.isEqual(matches(t, {start: c, end: d}), []);
+			return _.isEqual(matches01(t, {start: c, end: d}), []);
 		});
-		property('should return all matches',
+		property('should return all matches, half-open',
 			jsc.suchthat(jsc.array(jsc.tuple([jsc.nat, jsc.nat])),
 				a => a.length >= 2 && _.every(a, hasLength)), function (pairs) {
 					var intvls = _.map(pairs.slice(1), ([a, b], i) =>
 						({start: Math.min(a, b), end: Math.max(a, b), i: i}));
 					var q = {start: Math.min.apply(null, pairs[0]), end: Math.max.apply(null, pairs[0])};
 					var exp = _.filter(intvls, ({start, end}) => start < q.end && q.start < end);
+					var itree = index(intvls);
+					return _.isEqual(_.sortBy(matches01(itree, q), 'i'), _.sortBy(exp, 'i'));
+				});
+		property('should return all matches',
+			jsc.suchthat(jsc.array(jsc.tuple([jsc.nat, jsc.nat])),
+				a => a.length >= 2), function (pairs) {
+					var intvls = _.map(pairs.slice(1), ([a, b], i) =>
+						({start: Math.min(a, b), end: Math.max(a, b), i: i}));
+					var q = {start: Math.min.apply(null, pairs[0]), end: Math.max.apply(null, pairs[0])};
+					var exp = _.filter(intvls, ({start, end}) => start <= q.end && q.start <= end);
 					var itree = index(intvls);
 					return _.isEqual(_.sortBy(matches(itree, q), 'i'), _.sortBy(exp, 'i'));
 				});

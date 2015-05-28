@@ -51,14 +51,31 @@ function matches(node, pos) {
 		return [];
 	}
 	var {start, end} = pos;
-	return (node.high <= start ? [] :    // no matches in this node
-			(end <= node.el.start ? [] : // no match of this node or on right of this node
-				matches(node.right, pos).concat(node.el.end <= start ? [] : [node.el]))
+	return (node.high < start ? [] :    // no matches in this node
+			(end < node.el.start ? [] : // no match of this node or on right of this node
+				matches(node.right, pos).concat(node.el.end < start ? [] : [node.el]))
 					.concat(matches(node.left, pos)));
 }
 
+// Find intervals in node overlapping position, using half-open coords.
+// We could also support this by parameterizing the compare fn, though that adds
+// more function calls to what is expected to be a hot loop.
+// pos :: {start, end}
+function matches01(node, pos) {
+	if (!node) {
+		return [];
+	}
+	var {start, end} = pos;
+	return (node.high <= start ? [] :    // no matches in this node
+			(end <= node.el.start ? [] : // no match of this node or on right of this node
+				matches01(node.right, pos).concat(node.el.end <= start ? [] : [node.el]))
+					.concat(matches01(node.left, pos)));
+}
+
+
 module.exports = {
 	matches: matches,
+	matches01: matches01,
 	index: index,
 	toTree: arr => toTree(arr, 0, arr.length)
 };

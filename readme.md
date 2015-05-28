@@ -6,7 +6,8 @@ The intervals are indexed using an augmented balanced binary search tree. The
 search tree is bulk-loaded by sorting. There's no support for adding/removing
 intervals.
 
-Intervals are assumed to be over integers, with half-open indexes, [start, end).
+Intervals are assumed to be over integers. Coordinates can be closed [start, end],
+or half-open [start, end).
 
 Query time with the index should be O(log n), rather than 
 the O(n) required for a brute-force search.
@@ -25,8 +26,20 @@ var idx = index([{start: 10, end: 12, id: 1}, {start: 21, end: 30: id: 2}]);
 // matches(interval-tree, pos :: {start, end}) :: [{start, end, ...}, ...]
 
 var overlapping = matches(idx, {start: 12, end: 22});
+// => [{start: 10, end: 12, id: 1}, {start: 21, end: 30: id: 2}]
+
+// matching half-open coords, [start, end)
+// matches01(interval-tree, pos :: {start, end}) :: [{start, end, ...}, ...]
+
+var overlapping = matches(idx, {start: 12, end: 22});
 // => [{start: 21, end: 30: id: 2}]
+
 ```
+
+Note that building the tree is independent of the choice of closed or half-open
+coordinates, however you should use match01 if your coordinates are half-open.
+The intervals in the tree and the interval for query must use the same coordinate
+system, either closed or half-open.
 
 ## Build
 The build is based on npm and webpack.
