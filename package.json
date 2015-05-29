@@ -1,6 +1,6 @@
 {
   "name": "static-interval-tree",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "interval tree, for fast overlapping interval queries",
   "main": "dist/static-interval-tree.js",
   "scripts": {
