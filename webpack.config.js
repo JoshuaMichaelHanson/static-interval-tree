@@ -5,15 +5,17 @@ var webpack = require('webpack');
 
 module.exports = {
 	historyApiFallback: true,
-	entry: "./js/bogorouter",
+	entry: "./js/index",
 	output: {
-		path: "build",
+		path: "./dist",
 		publicPath: "/",
-		filename: "[name].js"
+		filename: "static-interval-tree.js",
+		library: "static-interval-tree",
+		libraryTarget: "umd"
 	},
 	module: {
 		loaders: [
-			{ test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader?optional=runtime,cacheDirectory=cache'}
+			{ test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader?cacheDirectory=cache'}
 		]
 	},
 	plugins: [
