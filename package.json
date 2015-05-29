@@ -31,6 +31,5 @@
     "underscore": "^1.7.0"
   },
   "dependencies": {
-    "babel-runtime": "^5.1.13"
   }
 }
