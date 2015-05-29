@@ -1,6 +1,6 @@
 {
   "name": "static-interval-tree",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "interval tree, for fast overlapping interval queries",
   "main": "index.js",
   "scripts": {
@@ -30,6 +30,5 @@
     "webpack-dev-server": "^1.7.0",
     "underscore": "^1.7.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
