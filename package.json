@@ -2,7 +2,7 @@
   "name": "static-interval-tree",
   "version": "1.0.1",
   "description": "interval tree, for fast overlapping interval queries",
-  "main": "index.js",
+  "main": "dist/static-interval-tree.js",
   "scripts": {
     "test": "webpack-dev-server --config webpack.test.js --devtool eval --port 8081",
     "lint": "eslint --no-color js/* test/*",
