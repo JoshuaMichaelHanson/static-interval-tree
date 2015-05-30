@@ -5,7 +5,7 @@
 // implementation that retains balance during add/remove (avl, red-black). Instead we
 // can sort, then build a tree from the sort.
 
-/*global module: false, require: false */
+/*global module: false */
 'use strict';
 
 // Build a balanced binary tree from an ordered array.
@@ -44,34 +44,47 @@ function index(intervals) {
 	return findEnd(toTree(sorted, 0, sorted.length));
 }
 
+function matchesAcc(node, pos, acc) {
+	if (node) {
+		var {start, end} = pos;
+		if (node.high >= start) {
+			if (end >= node.el.start) {
+				if (node.el.end >= start) {
+					acc.push(node.el);
+				}
+				matchesAcc(node.right, pos, acc);
+			}
+			matchesAcc(node.left, pos, acc);
+		}
+	}
+	return acc;
+}
+
 // Find intervals in node overlapping position.
 // pos :: {start, end}
-function matches(node, pos) {
-	if (!node) {
-		return [];
+var matches = (node, pos) => matchesAcc(node, pos, []);
+
+function matches01Acc(node, pos, acc) {
+	if (node) {
+		var {start, end} = pos;
+		if (node.high > start) {
+			if (end > node.el.start) {
+				if (node.el.end > start) {
+					acc.push(node.el);
+				}
+				matches01Acc(node.right, pos, acc);
+			}
+			matches01Acc(node.left, pos, acc);
+		}
 	}
-	var {start, end} = pos;
-	return (node.high < start ? [] :    // no matches in this node
-			(end < node.el.start ? [] : // no match of this node or on right of this node
-				matches(node.right, pos).concat(node.el.end < start ? [] : [node.el]))
-					.concat(matches(node.left, pos)));
+	return acc;
 }
 
 // Find intervals in node overlapping position, using half-open coords.
 // We could also support this by parameterizing the compare fn, though that adds
 // more function calls to what is expected to be a hot loop.
 // pos :: {start, end}
-function matches01(node, pos) {
-	if (!node) {
-		return [];
-	}
-	var {start, end} = pos;
-	return (node.high <= start ? [] :    // no matches in this node
-			(end <= node.el.start ? [] : // no match of this node or on right of this node
-				matches01(node.right, pos).concat(node.el.end <= start ? [] : [node.el]))
-					.concat(matches01(node.left, pos)));
-}
-
+var matches01 = (node, pos) => matches01Acc(node, pos, []);
 
 module.exports = {
 	matches: matches,
