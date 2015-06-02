@@ -9,8 +9,8 @@ intervals.
 Intervals are assumed to be over integers. Coordinates can be closed [start, end],
 or half-open [start, end).
 
-Query time with the index should be O(log n), rather than 
-the O(n) required for a brute-force search.
+Query time with the index should be O(log n + k), (k being number of matches returned)
+rather than the O(n) required for a brute-force search.
 
 Work in progress. Might be useful for drawing genomic data.
 
@@ -31,7 +31,7 @@ var overlapping = matches(idx, {start: 12, end: 22});
 // matching half-open coords, [start, end)
 // matches01(interval-tree, pos :: {start, end}) :: [{start, end, ...}, ...]
 
-var overlapping = matches(idx, {start: 12, end: 22});
+var overlapping = matches01(idx, {start: 12, end: 22});
 // => [{start: 21, end: 30: id: 2}]
 
 ```
