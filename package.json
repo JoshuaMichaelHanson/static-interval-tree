@@ -4,9 +4,10 @@
   "description": "interval tree, for fast overlapping interval queries",
   "main": "dist/static-interval-tree.js",
   "scripts": {
-    "test": "webpack-dev-server --config webpack.test.js --devtool eval --port 8081",
+    "pretest": "webpack --config webpack.test.js --target node test/all.js",
+    "test": "mocha --timeout 0 build/testBundle",
     "lint": "eslint --no-color js/* test/*",
-    "clean": "rimraf build/*",
+    "clean": "rimraf dist/*",
     "start": "webpack-dev-server --devtool eval --progress --colors --history-api-fallback",
     "build": "webpack",
     "build:prod": "npm run build -- --config webpack.prod.js --devtool source-map",
