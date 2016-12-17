@@ -21,12 +21,12 @@ var {index, matches} = require('static-interval-tree');
 
 // index(intervals :: [{start, end, ...}, ...]) :: interval-tree
 
-var idx = index([{start: 10, end: 12, id: 1}, {start: 21, end: 30: id: 2}]);
+var idx = index([{start: 10, end: 12, id: 1}, {start: 21, end: 30, id: 2}]);
 
 // matches(interval-tree, pos :: {start, end}) :: [{start, end, ...}, ...]
 
 var overlapping = matches(idx, {start: 12, end: 22});
-// => [{start: 10, end: 12, id: 1}, {start: 21, end: 30: id: 2}]
+// => [{start: 10, end: 12, id: 1}, {start: 21, end: 30, id: 2}]
 
 // matching half-open coords, [start, end)
 // matches01(interval-tree, pos :: {start, end}) :: [{start, end, ...}, ...]
